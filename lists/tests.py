@@ -17,5 +17,5 @@ class HomePageTest(TestCase):
         expected_html = render_to_string('home.html') # Load template home.html and convert it to html string
         self.assertEqual(response.content.decode(), expected_html)  # Compare expect html string to content on web page
 
-       
+
 

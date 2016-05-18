@@ -39,7 +39,8 @@ class NewVisitorTest(unittest.TestCase):  # organize test into class based on Te
         table = self.browser.find_element_by_id('id_list_table')  # checks db for id_list_table table
         rows = table.find_elements_by_tag_name('tr')  # list of rows with tag name 'tr'
         self.assertTrue(
-            any(row.text == '1:Buy bananas' for row in rows)   # Returns true if any row has 'text' column with bananas
+            any(row.text == '1:Buy bananas' for row in rows),   # Returns true if any row has 'text' column with bananas
+            "New To-Do item did not appear in table"
         )
 
 
