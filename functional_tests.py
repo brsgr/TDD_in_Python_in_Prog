@@ -35,14 +35,16 @@ class NewVisitorTest(unittest.TestCase):  # organize test into class based on Te
         # When he hits enter, the page should update and list-
         # "1: Buy bananas" as an item on a to-do list table
         inputbox.send_keys(Keys.ENTER)
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.browser.implicitly_wait(2)
+        inputbox.send_keys('Eat bananas')
+        inputbox.send_keys(Keys.ENTER)
 
         table = self.browser.find_element_by_id('id_list_table')  # checks db for id_list_table table
         rows = table.find_elements_by_tag_name('tr')  # list of rows with tag name 'tr'
-        self.assertTrue(
-            any(row.text == '1:Buy bananas' for row in rows),   # Returns true if any row has 'text' column with bananas
-            "New To-Do item did not appear in table"
-        )
-
+        self.assertIn('1: Buy bananas', [row.text for row in rows])
+        self.assertIn('2: Eat bananas', [row.text for row in rows])
+        self.fail('finish the test')
 
 if __name__ == '__main__':
     unittest.main(warnings='ignore')  # runs the test runner command from unit test
