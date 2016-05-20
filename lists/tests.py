@@ -22,14 +22,23 @@ class HomePageTest(TestCase):
         request = HttpRequest()  # Create http request object
         request.method = 'POST'
         request.POST['item_text'] = 'A new list item'  # set request to attempt to post something when called
-
         response = home_page(request)  # Call request from home_page view
+
+        self.assertEqual(Item.objects.count(), 1)  # Checks that the Item table contains 1 objects
+        new_item = Item.objects.first()  # sets variable new_item to first (and only) element in table
+        self.assertEqual(new_item.text, 'A new list item')  # Checks that new_item is equal to the str from the request
+
         self.assertIn('A new list item', response.content.decode())  # Check that tested item is in response.content
         expected_html = render_to_string(
             'home.html',
             {'new_item_text': 'A new list item'}
         )
         self.assertTrue(response.content.decode(), expected_html)
+
+    def test_home_page_only_saves_items_when_necessary(self):
+        request = HttpRequest()
+        home_page(request)
+        self.assertEqual(Item.objects.count(), 0)
 
 
 class ItemModelTest(TestCase):
