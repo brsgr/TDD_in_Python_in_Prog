@@ -14,7 +14,7 @@ class NewVisitorTest(unittest.TestCase):  # organize test into class based on Te
 
     def check_for_row_in_list_table(self, row_text):
         table = self.browser.find_element_by_id('id_new_item')
-        rows = table.find_element_by_tag_name('tr')
+        rows = table.find_elements_by_tag_name('tr')
         self.assertIn(row_text, [row.text for row in rows])
 
     def test_can_start_a_list_and_retrieve_it(self):  # Methods that begin with 'test' are run by the test runner
@@ -41,13 +41,10 @@ class NewVisitorTest(unittest.TestCase):  # organize test into class based on Te
         # "1: Buy bananas" as an item on a to-do list table
         inputbox.send_keys(Keys.ENTER)
         inputbox = self.browser.find_element_by_id('id_new_item')
-        
-        self.browser.implicitly_wait(2)
+
         inputbox.send_keys('Eat bananas')
         inputbox.send_keys(Keys.ENTER)
 
-        table = self.browser.find_element_by_id('id_list_table')  # checks db for id_list_table table
-        rows = table.find_elements_by_tag_name('tr')  # list of rows with tag name 'tr'
         self.check_for_row_in_list_table('1: Buy bananas')
         self.check_for_row_in_list_table('2: Eat bananas')
         self.fail('finish the test')
