@@ -1,9 +1,10 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import unittest
 
 
-class NewVisitorTest(unittest.TestCase):  # organize test into class based on TestCase subclass
+class NewVisitorTest(LiveServerTestCase):  # organize test into class based on TestCase subclass
 
     def setUp(self):  # 'setup' method that opens the browser and creates object for it
         self.browser = webdriver.Firefox()
@@ -13,12 +14,13 @@ class NewVisitorTest(unittest.TestCase):  # organize test into class based on Te
         self.browser.quit()
 
     def check_for_row_in_list_table(self, row_text):
-        table = self.browser.find_element_by_id('id_new_item')
+        table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
+        #print(rows, type(rows))
         self.assertIn(row_text, [row.text for row in rows])
 
     def test_can_start_a_list_and_retrieve_it(self):  # Methods that begin with 'test' are run by the test runner
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
 
         # open homepage of the website
         self.assertIn('To-Do', self.browser.title)
@@ -50,4 +52,4 @@ class NewVisitorTest(unittest.TestCase):  # organize test into class based on Te
         self.fail('finish the test')
 
 if __name__ == '__main__':
-    unittest.main(warnings='ignore')  # runs the test runner command from unit test
+    unittest.main(warnings='ignore')
