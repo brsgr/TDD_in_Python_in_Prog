@@ -4,7 +4,7 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 
 from .models import Item
-from .views import home_page
+from .views import home_page, view_list
 
 class HomePageTest(TestCase):
 
@@ -30,7 +30,7 @@ class HomePageTest(TestCase):
         self.assertEqual(new_item.text, 'A new list item')  # Checks that new_item is equal to the str from the request
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
 
     def test_home_page_redirects_after_post(self):
         request = HttpRequest()
@@ -40,21 +40,13 @@ class HomePageTest(TestCase):
         response = home_page(request)  # Call request from home_page view
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/lists/theonlylistintheworld')
+        self.assertEqual(response['location'], '/lists/the-only-list-in-the-world/')
 
     def test_home_page_only_saves_items_when_necessary(self):
         request = HttpRequest()
         home_page(request)
         self.assertEqual(Item.objects.count(), 0)
 
-    def test_home_page_displays_all_list_items(self):
-        Item.objects.create(text='item1')
-        Item.objects.create(text='item2')
-        request = HttpRequest()
-        response = home_page(request)
-
-        self.assertIn('item1', response.content.decode())
-        self.assertIn('item2', response.content.decode())
 
 class ItemModelTest(TestCase):
 
@@ -77,3 +69,18 @@ class ItemModelTest(TestCase):
         self.assertEqual(second_saved_item.text, 'Item the second')
 
 
+class ListViewTest(TestCase):
+
+    def test_uses_list_template(self): # Checks that url at /lists/ uses the list.html template
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+        self.assertTemplateUsed(response, 'list.html')
+
+    def test_displays_all_items(self):
+        Item.objects.create(text='item1')
+        Item.objects.create(text='item2')
+
+        response = self.client.get('/lists/the-only-list-in-the-world/')
+        # Uses Django test client instead of calling view directly, tests superlists/url
+
+        self.assertContains(response, 'item1')  # assertContains functions on bytes, so response.decode() is not needed
+        self.assertContains(response, 'item2')

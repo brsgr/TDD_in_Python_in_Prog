@@ -11,6 +11,7 @@ class NewVisitorTest(LiveServerTestCase):  # organize test into class based on T
         self.browser.implicitly_wait(3)
 
     def tearDown(self):  # 'shutdown' method that closes the browser
+        self.browser.refresh()
         self.browser.quit()
 
     def check_for_row_in_list_table(self, row_text):
@@ -44,7 +45,7 @@ class NewVisitorTest(LiveServerTestCase):  # organize test into class based on T
         inputbox.send_keys(Keys.ENTER)
         edith_list_url = self.browser.current_url
         self.assertRegex(edith_list_url, '/lists/.+')  # verifies that the url contains /lists/
-        self.check_for_row_in_list_table('1:Buy bananas')  # Verifies that '1:Buy bananas' is in some id_list_table
+        self.check_for_row_in_list_table('1: Buy bananas')  # Verifies that '1:Buy bananas' is in some id_list_table
 
         inputbox.send_keys('Eat bananas')
         inputbox.send_keys(Keys.ENTER)
