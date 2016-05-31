@@ -82,7 +82,6 @@ class ListViewTest(TestCase):
 class NewListTest(TestCase):
 
     def test_saving_a_POST_request(self):
-        
         self.client.post(
             '/lists/new',
             data={'item_text': 'A new list item'}
@@ -98,6 +97,15 @@ class NewListTest(TestCase):
         )
         new_list = List.objects.first()
         self.assertRedirects(response, '/lists/%d/' % (new_list.id,))
+
+    def test_saving_a_new_list_through_POST(self):
+        self.client.post(
+            '/lists/new',
+            data={'item_text': 'A new list item'}
+        )
+        new_list = List.objects.first()
+        self.assertEqual(1, new_list.id)
+
 
 class NewItemTest(TestCase):
 
